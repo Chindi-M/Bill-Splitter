@@ -7,47 +7,121 @@
     <title>Bill Splitter</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 20px auto;
+            font-family: 'GDS Transport', Arial, sans-serif;
+            max-width: 800px;
+            margin: 30px auto;
             padding: 20px;
+            background-color: #f3f2f1;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #0b0c0c;
+            border-bottom: 1px solid #b1b4b6;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
         }
 
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 25px;
+            background: white;
+            padding: 15px;
+            border-left: 4px solid #00703C;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        label {
+            display: block;
+            color: #0b0c0c;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
         input {
-            padding: 5px;
-            width: 200px;
+            padding: 8px;
+            width: 100%;
+            max-width: 300px;
+            border: 2px solid #0b0c0c;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: 3px solid #ffdd00;
+            outline-offset: 0;
+            box-shadow: inset 0 0 0 2px;
         }
 
         button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            padding: 10px 25px;
+            background-color: #00703C;
             color: white;
             border: none;
+            border-radius: 3px;
             cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 2px 0 #002d18;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #005a30;
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-left: 4px solid #00703C;
+            display: none;
+        }
+
+        .summary-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .final-amount {
+            color: #00703C;
+            font-weight: bold;
+            font-size: 1.2em;
         }
     </style>
 </head>
 
 <body>
-    <h1>Bill Splitter</h1>
-    <div class="input-group">
-        <label>Bill Amount: £</label>
-        <input type="number" id="bill" step="0.01">
+    <div class="container">
+        <h1>Bill Splitter</h1>
+        <div class="input-group">
+            <label for="bill">Bill Amount:</label>
+            <input type="number" id="bill" step="0.01" placeholder="£0.00">
+        </div>
+        <div class="input-group">
+            <label for="tip">Tip Percentage:</label>
+            <input type="number" id="tip" step="1" placeholder="10">
+        </div>
+        <div class="input-group">
+            <label for="people">Number of People:</label>
+            <input type="number" id="people" step="1" placeholder="1">
+        </div>
+        <button onclick="calculateSplit()">Calculate Split</button>
+        <div id="result"></div>
     </div>
-    <div class="input-group">
-        <label>Tip Percentage: </label>
-        <input type="number" id="tip" step="1">
-    </div>
-    <div class="input-group">
-        <label>Number of People: </label>
-        <input type="number" id="people" step="1">
-    </div>
-    <button onclick="calculateSplit()">Calculate</button>
-    <div id="result"></div>
 
     <script>
         function calculateSplit() {
@@ -55,7 +129,7 @@
             const tipPercent = parseFloat(document.getElementById('tip').value);
             const people = parseInt(document.getElementById('people').value);
 
-            if (bill <= 0 || people <= 0) {
+            if (isNaN(bill) || isNaN(tipPercent) || isNaN(people) || bill <= 0 || people <= 0) {
                 alert('Please enter valid positive numbers');
                 return;
             }
@@ -64,12 +138,14 @@
             const total = bill + tip;
             const perPerson = total / people;
 
-            document.getElementById('result').innerHTML = `
-                <h3>Bill Summary:</h3>
-                <p>Original bill: £${bill.toFixed(2)}</p>
-                <p>Tip amount: £${tip.toFixed(2)} (${tipPercent}%)</p>
-                <p>Total bill: £${total.toFixed(2)}</p>
-                <p>Each person pays: £${perPerson.toFixed(2)}</p>
+            const result = document.getElementById('result');
+            result.style.display = 'block';
+            result.innerHTML = `
+                <h3>Bill Summary</h3>
+                <div class="summary-item">Original bill: £${bill.toFixed(2)}</div>
+                <div class="summary-item">Tip amount: £${tip.toFixed(2)} (${tipPercent}%)</div>
+                <div class="summary-item">Total bill: £${total.toFixed(2)}</div>
+                <div class="summary-item final-amount">Each person pays: £${perPerson.toFixed(2)}</div>
             `;
         }
     </script>
